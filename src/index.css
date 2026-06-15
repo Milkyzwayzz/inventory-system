@@ -1,0 +1,253 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ── Google Font ── */
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap');
+
+@layer base {
+
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  html,
+  body,
+  #root {
+    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    background-color: #F4F5F7;
+  }
+}
+
+@layer components {
+
+  /* Glass card used across all pages */
+  .premium-glass {
+    @apply bg-white/80 backdrop-blur-xl border border-white/50 shadow-2xl shadow-slate-200/50;
+  }
+
+  /* Gradient text helper */
+  .gradient-text {
+    @apply bg-gradient-to-r from-indigo-600 via-blue-600 to-purple-600 bg-clip-text text-transparent;
+  }
+
+  /* Admin badge */
+  .admin-badge {
+    @apply bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-4 py-2 rounded-2xl text-sm font-bold shadow-lg;
+  }
+
+  /* Primary button preset */
+  .btn-primary {
+    @apply bg-gradient-to-r from-indigo-600 to-blue-600 text-white hover:from-indigo-700 hover:to-blue-700 border border-indigo-500/30 shadow-xl hover:shadow-2xl transition-all duration-200 active:scale-95;
+  }
+
+  /* Login page background */
+  .login-bg {
+    background-image: url('https://www.victorlodge.com.au/wp-content/uploads/2024/06/colour-printing-near-me2.jpg');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+  }
+
+  /* Sidebar nav link — inactive */
+  .nav-link {
+    @apply flex items-center gap-4 px-4 py-3 rounded-2xl font-bold text-xs uppercase tracking-wider text-slate-600 hover:text-slate-900 bg-slate-50/90 hover:bg-slate-100 border-2 border-slate-200 hover:border-slate-300 transition-all duration-200 hover:shadow-sm;
+  }
+
+  /* Sidebar nav link — active */
+  .nav-link-active {
+    @apply text-white border-transparent shadow-lg scale-[1.02];
+  }
+
+  /* Input field */
+  .form-input {
+    @apply w-full px-4 py-4 bg-slate-50 border-2 border-slate-200 rounded-2xl text-sm font-semibold focus:outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/20 hover:border-slate-300 transition-all duration-200 placeholder:text-slate-400;
+  }
+
+  .form-input-icon {
+    @apply pl-12;
+  }
+
+  /* Flat card (used in tables/inventory) */
+  .flat-card {
+    @apply bg-white border-2 border-slate-200 rounded-xl transition-all duration-200 hover:border-indigo-400 hover:scale-[1.01];
+  }
+
+  /* Stat card */
+  .stat-card {
+    @apply bg-white/80 backdrop-blur-sm border border-slate-200 rounded-2xl p-6 shadow-sm hover:shadow-md transition-all duration-200;
+  }
+}
+
+@layer utilities {
+
+  /* Float animation */
+  @keyframes float {
+
+    0%,
+    100% {
+      transform: translateY(0px);
+    }
+
+    50% {
+      transform: translateY(-8px);
+    }
+  }
+
+  .animate-float {
+    animation: float 3s ease-in-out infinite;
+  }
+
+  /* Page fade-in */
+  @keyframes pageFadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .animate-page-in {
+    animation: pageFadeIn 0.25s ease-out forwards;
+  }
+
+  /* Shimmer loading effect */
+  @keyframes shimmer {
+    0% {
+      background-position: -200% 0;
+    }
+
+    100% {
+      background-position: 200% 0;
+    }
+  }
+
+  .animate-shimmer {
+    background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+  }
+
+  /* Fade-in for login/signup */
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .animate-fade-in {
+    animation: fadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+
+  /* Slow floating icon animation with slight rotation */
+  @keyframes floatIcon {
+
+    0%,
+    100% {
+      transform: translateY(0) rotate(3deg);
+    }
+
+    50% {
+      transform: translateY(-15px) rotate(0deg);
+    }
+  }
+
+  .float-icon {
+    animation: floatIcon 5s ease-in-out infinite;
+  }
+
+  /* Slide-up transition */
+  @keyframes slideUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .animate-slide-up {
+    animation: slideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+
+  /* Floating blobs for legal page background */
+  @keyframes blob {
+    0% {
+      transform: translate(0px, 0px) scale(1);
+    }
+
+    33% {
+      transform: translate(30px, -50px) scale(1.1);
+    }
+
+    66% {
+      transform: translate(-20px, 20px) scale(0.9);
+    }
+
+    100% {
+      transform: translate(0px, 0px) scale(1);
+    }
+  }
+
+  .animate-blob {
+    animation: blob 7s infinite alternate ease-in-out;
+  }
+
+  /* Progress bar transitions */
+  .progress-bar {
+    transition: width 0.2s ease-out;
+  }
+
+  /* Section cards hover transition */
+  .section-card {
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .section-card:hover {
+    transform: translateX(8px);
+    background: rgba(255, 255, 255, 0.95);
+  }
+
+  .sidebar-link {
+    @apply w-full flex items-center gap-4 px-5 py-4 rounded-2xl font-bold text-slate-600 bg-slate-50/90 border border-slate-200/70 transition-all duration-300 hover:text-slate-900 hover:bg-slate-100;
+  }
+
+  /* Sidebar active links */
+  .sidebar-link.active {
+    @apply bg-white text-indigo-800 border-indigo-100 shadow-lg;
+    transform: scale(1.02);
+  }
+
+  /* Glass panel styling */
+  .glass-panel {
+    background: rgba(255, 255, 255, 0.7) !important;
+    backdrop-filter: blur(12px) !important;
+    -webkit-backdrop-filter: blur(12px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.5) !important;
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.05) !important;
+  }
+
+  /* Text gradients */
+  .text-gradient {
+    background: linear-gradient(135deg, #4F46E5 0%, #9333EA 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+}
