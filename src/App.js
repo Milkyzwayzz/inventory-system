@@ -15,6 +15,7 @@ import { onAuthStateChanged } from 'firebase/auth';
 import {
   LayoutDashboard, Calculator, Package, TrendingUp,
   Users, FileBarChart, Printer, LogOut, Palette, Eye, EyeOff,
+  Menu, X
 } from 'lucide-react';
 import { auth } from './firebase';
 
@@ -152,6 +153,30 @@ function AdminShell({ children }) {
   const [editForm, setEditForm] = useState({ ...adminProfile });
   const [showPassword, setShowPassword] = useState(false);
 
+  // Mobile layout state and handler
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const location = useLocation();
+
+  useEffect(() => {
+    const mql = window.matchMedia('(max-width: 767px)');
+    const handler = (e) => {
+      setIsMobile(e.matches);
+      if (!e.matches) {
+        setMobileOpen(false);
+      }
+    };
+    mql.addEventListener('change', handler);
+    return () => mql.removeEventListener('change', handler);
+  }, []);
+
+  // Auto-close sidebar on mobile when navigating pages
+  useEffect(() => {
+    if (isMobile) {
+      setMobileOpen(false);
+    }
+  }, [location.pathname, isMobile]);
+
   const handleSaveProfile = (e) => {
     e.preventDefault();
     localStorage.setItem('adminProfile', JSON.stringify(editForm));
@@ -162,38 +187,83 @@ function AdminShell({ children }) {
 
   return (
     <div className="flex min-h-screen bg-[#F4F5F7]">
+      {/* Mobile Top Bar */}
+      {isMobile && (
+        <div className="fixed top-0 left-0 right-0 h-16 bg-slate-950 text-slate-100 flex items-center justify-between px-6 z-40 border-b border-slate-800">
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg shadow-slate-900/40 flex-shrink-0">
+              <Printer className="w-5 h-5 text-white" strokeWidth={2.5} />
+            </div>
+            <div>
+              <h1 className="text-xs font-black text-white tracking-tight uppercase leading-none">KRISHSAN TECH</h1>
+              <p className="text-[8px] text-slate-400 font-bold uppercase tracking-widest mt-0.5">Admin</p>
+            </div>
+          </div>
+          <button
+            onClick={() => setMobileOpen(true)}
+            className="p-2 bg-slate-850 hover:bg-slate-800 rounded-xl transition-colors cursor-pointer"
+            aria-label="Open menu"
+          >
+            <Menu className="w-5 h-5 text-slate-200" />
+          </button>
+        </div>
+      )}
+
+      {/* Backdrop Overlay for Mobile Drawer */}
+      {isMobile && mobileOpen && (
+        <div
+          className="fixed inset-0 bg-black/60 backdrop-blur-xs z-45 transition-opacity"
+          onClick={() => setMobileOpen(false)}
+        />
+      )}
 
       {/* Sidebar */}
       <motion.aside
-        animate={{ width: collapsed ? 80 : 280 }}
+        animate={{ 
+          width: isMobile ? 280 : (collapsed ? 80 : 280),
+          x: isMobile ? (mobileOpen ? 0 : -280) : 0
+        }}
         transition={{ duration: 0.25, ease: 'easeInOut' }}
         className="fixed h-full z-50 flex flex-col bg-slate-950 text-slate-100 border-r border-slate-800/70 overflow-hidden"
       >
         {/* Logo */}
         <div className="p-6 border-b border-slate-800/70 flex-shrink-0">
-          <div className={`flex items-center gap-3 ${collapsed ? 'justify-center' : ''}`}>
-            <div className="w-11 h-11 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-2xl flex items-center justify-center shadow-xl shadow-slate-900/40 flex-shrink-0">
-              <Printer className="w-6 h-6 text-white" />
-            </div>
-            {!collapsed && (
-              <div>
-                <h1 className="text-xl font-black text-white tracking-tight leading-none">KRISHSAN TECH ENTERPRISE</h1>
-                <p className="text-[10px] text-slate-300 font-bold uppercase tracking-widest">ADMIN PORTAL</p>
+          <div className="flex items-center justify-between">
+            <div className={`flex items-center gap-3 ${collapsed && !isMobile ? 'justify-center' : ''}`}>
+              <div className="w-11 h-11 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-2xl flex items-center justify-center shadow-xl shadow-slate-900/40 flex-shrink-0">
+                <Printer className="w-6 h-6 text-white" />
               </div>
+              {(!collapsed || isMobile) && (
+                <div>
+                  <h1 className="text-xl font-black text-white tracking-tight leading-none">KRISHSAN TECH ENTERPRISE</h1>
+                  <p className="text-[10px] text-slate-300 font-bold uppercase tracking-widest">ADMIN PORTAL</p>
+                </div>
+              )}
+            </div>
+            {isMobile && (
+              <button
+                onClick={() => setMobileOpen(false)}
+                className="p-2 bg-slate-800 hover:bg-slate-700 rounded-xl transition-colors cursor-pointer"
+                aria-label="Close menu"
+              >
+                <X className="w-5 h-5 text-slate-200" />
+              </button>
             )}
           </div>
-          <button
-            onClick={() => setCollapsed(c => !c)}
-            className="mt-4 w-full p-2 rounded-xl bg-slate-800/80 hover:bg-slate-800 text-slate-200 transition-colors text-xs font-bold"
-          >
-            {collapsed ? '→' : '← Collapse'}
-          </button>
+          {!isMobile && (
+            <button
+              onClick={() => setCollapsed(c => !c)}
+              className="mt-4 w-full p-2 rounded-xl bg-slate-800/80 hover:bg-slate-800 text-slate-200 transition-colors text-xs font-bold"
+            >
+              {collapsed ? '→' : '← Collapse'}
+            </button>
+          )}
         </div>
 
         {/* Nav */}
         <nav className="flex-1 p-4 space-y-2 overflow-y-auto">
           {ADMIN_NAV.map(item =>
-            collapsed ? (
+            (collapsed && !isMobile) ? (
               <Link key={item.to} to={item.to} title={item.label}
                 className="flex justify-center p-3 rounded-2xl text-slate-300 hover:text-white hover:bg-slate-800/80 transition-all">
                 <item.Icon className="w-5 h-5" />
@@ -206,7 +276,7 @@ function AdminShell({ children }) {
 
         {/* Footer */}
         <div className="p-4 border-t border-slate-800/70 space-y-3">
-          {collapsed ? (
+          {(collapsed && !isMobile) ? (
             <div className="flex flex-col items-center gap-3">
               <button
                 onClick={() => {
@@ -328,8 +398,8 @@ function AdminShell({ children }) {
 
       {/* Main */}
       <main
-        className="flex-1 overflow-y-auto p-8 transition-all duration-300"
-        style={{ marginLeft: collapsed ? 80 : 280 }}
+        className={`flex-1 overflow-y-auto p-4 md:p-8 transition-all duration-300 ${isMobile ? 'pt-20' : ''}`}
+        style={{ marginLeft: isMobile ? 0 : (collapsed ? 80 : 280) }}
       >
         <div className="max-w-7xl mx-auto animate-page-in">
           {children}

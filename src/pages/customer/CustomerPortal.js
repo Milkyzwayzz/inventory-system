@@ -2,17 +2,17 @@
 // Enhanced design — dark navy sidebar, cool page bg, Plus Jakarta Sans + IBM Plex Mono
 
 import React, {
-  useState, useEffect, createContext, useContext, useCallback, useRef
+  useState, useEffect, createContext, useContext, useRef
 } from 'react';
 import {
   Mail, Lock, User, Printer, ArrowRight, Loader2, LogOut,
   Bell, Upload, Eye, EyeOff, CheckCircle2,
-  FileText, X, CreditCard, Clock, ShoppingCart, File,
-  Trash2, AlertCircle, ChevronRight, Package,
+  FileText, X, CreditCard, Clock, ShoppingCart,
+  AlertCircle, ChevronRight, Package,
   RefreshCw, CheckCircle, Zap, Shield,
-  Search, Plus, Sparkles, Star,
+  Search, Sparkles,
   Edit2, Save, Phone, MapPin as MapPinIcon,
-  AlertTriangle, ChevronDown, LayoutDashboard, History,
+  AlertTriangle, LayoutDashboard,
 } from 'lucide-react';
 import {
   signInWithEmailAndPassword, createUserWithEmailAndPassword,
@@ -23,7 +23,7 @@ import {
   onSnapshot, updateDoc, Timestamp, serverTimestamp, addDoc
 } from 'firebase/firestore';
 import { auth, db } from '../../firebase';
-import { toast, Toaster } from 'react-hot-toast';
+import { toast } from 'react-hot-toast';
 import {
   useNavigate, Routes, Route, Navigate, useLocation
 } from 'react-router-dom';
@@ -641,7 +641,7 @@ const OrderDetailModal = ({ order, onClose }) => {
     } catch (err) { toast.error(err.message, { id: toastId }); setUploading(false); }
   };
 
-  const stepIndex = { pending: 1, paid: 2, processing: 3, ready: 4, completed: 5 };
+
   const currentStep = order.status === 'completed' ? 5 : order.status === 'ready' ? 4 : order.status === 'processing' ? 3 : order.paymentStatus === 'paid' ? 2 : 1;
   const steps = [
     { label: 'Placed', emoji: '🛒' },
@@ -913,7 +913,7 @@ const CustomerShell = ({ children }) => {
       const t = setTimeout(() => setFlashOrderId(null), 6000);
       return () => clearTimeout(t);
     }
-  }, [location.state, navigate]);
+  }, [location.state, location.pathname, navigate]);
 
   const markNotificationRead = async (id) => {
     try { await updateDoc(doc(db, 'notifications', id), { read: true }); }

@@ -5,7 +5,6 @@ import {
   CheckCircle2,
   Clock,
   Shield,
-  Scale,
   ExternalLink,
   ChevronRight,
   Info,
